@@ -5,10 +5,9 @@
         "core": "*",
         "radio": "*",
         "microphone": "*",
-        "dojo-block-master": "pub:55800-58208-29567-10182"
+        "dojo-block-master": "pub:54295-26607-92608-75565"
     },
     "files": [
-        "main.blocks",
         "main.ts",
         "README.md"
     ],
