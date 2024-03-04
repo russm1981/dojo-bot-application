@@ -19,7 +19,7 @@ serial.redirect(
     BaudRate.BaudRate115200
 )
 
-serial.writeString("\n\n\nWelcome to dojo:bot App v4.1 (block 1.1.2)\n")
+serial.writeString("\n\n\nWelcome to dojo:bot App v4.3 (block 1.1.5)\n")
 dojo.bot_init()
 
 
@@ -39,7 +39,7 @@ if (input.buttonIsPressed(Button.A)) {
     dojo.bot_led_colour(dojo.LED_ID.LED3, dojo.COLOUR.RED)
 } else {
 
-    basic.showString("v4.1")
+    basic.showString("v4.3")
 
     basic.showIcon(IconNames.Heart)
     music.play(music.builtinPlayableSoundEffect(soundExpression.hello), music.PlaybackMode.UntilDone)
@@ -183,69 +183,68 @@ basic.forever(function () {
         //Monitor buttons for go to position and store position
         if (pins.digitalReadPin(DigitalPin.P5) == 0) {
             button_count_A += 1
-            if (button_count_A == 100) {
-                music.tonePlayable(Note.B5, music.beat(BeatFraction.Whole))
-            }
-        }
-        else if (pins.digitalReadPin(DigitalPin.P11) == 0) {
-            button_count_B += 1
-            if (button_count_B == 100) {
-                music.tonePlayable(Note.B5, music.beat(BeatFraction.Whole))
-            }
-        }
-        else if (pins.digitalReadPin(DigitalPin.P8) == 0) {
-            button_count_C += 1
-            if(button_count_C == 100) {
-                music.tonePlayable(Note.B5, music.beat(BeatFraction.Whole))
+            button_count_B = 0
+            if (button_count_A == 50) {
+                music.play(music.tonePlayable(494, music.beat(BeatFraction.Whole)), music.PlaybackMode.UntilDone)
             }
         }
         else {
-            //Check for a release
-            if (button_count_A > 100) {
+            if (button_count_A >= 50) {
                 //3 seconds so store position
                 button_count_A = 0
-                basic.showString("A")
-                dojo.bot_servo_store_position(dojo.POSITION_ID.A)
+                //basic.showString("A")
+                serial.writeLine(`Store A`)
+                dojo.positionA_left = dojo.servo_left_position
+                dojo.positionA_right = dojo.servo_right_position
+                dojo.positionA_rotate = dojo.servo_rotate_position
             }
-            else if (button_count_A > 1) {
+            else if (button_count_A >= 1) {
                 //Quick release so go
                 button_count_A = 0
-                basic.showString("A")
-                dojo.bot_servo_go_position(dojo.POSITION_ID.A)
+                //basic.showString("A")
+                serial.writeLine(`Go A`)
+                dojo.bot_servo_position(dojo.SERVO_ID.SERVO_LEFT, dojo.positionA_left)
+                dojo.bot_servo_position(dojo.SERVO_ID.SERVO_RIGHT, dojo.positionA_right)
+                dojo.bot_servo_position(dojo.SERVO_ID.SERVO_ROTATE, dojo.positionA_rotate)
             }
-            if (button_count_B > 100) {
+        }
+
+        if (pins.digitalReadPin(DigitalPin.P11) == 0) {
+            button_count_B += 1
+            button_count_A = 0
+            if (button_count_B == 50) {
+                music.play(music.tonePlayable(494, music.beat(BeatFraction.Whole)), music.PlaybackMode.UntilDone)
+            }
+        }
+        else {
+            if (button_count_B >= 50) {
                 //3 seconds so store position
                 button_count_B = 0
-                basic.showString("B")
-                dojo.bot_servo_store_position(dojo.POSITION_ID.B)
+                //basic.showString("B")
+                serial.writeLine(`Store B`)
+                dojo.positionB_left = dojo.servo_left_position
+                dojo.positionB_right = dojo.servo_right_position
+                dojo.positionB_rotate = dojo.servo_rotate_position
             }
-            else if (button_count_B > 1) {
+            else if (button_count_B >= 1) {
                 //Quick release so go
                 button_count_B = 0
-                basic.showString("B")
-                dojo.bot_servo_go_position(dojo.POSITION_ID.B)
+                //basic.showString("B")
+                serial.writeLine(`Go B`)
+                dojo.bot_servo_position(dojo.SERVO_ID.SERVO_LEFT, dojo.positionB_left)
+                dojo.bot_servo_position(dojo.SERVO_ID.SERVO_RIGHT, dojo.positionB_right)
+                dojo.bot_servo_position(dojo.SERVO_ID.SERVO_ROTATE, dojo.positionB_rotate)
             }
-            if (button_count_C > 100) {
-                //3 seconds so store position
-                button_count_C = 0
-                basic.showString("C")
-                dojo.bot_servo_store_position(dojo.POSITION_ID.C)
-            }
-            else if (button_count_C > 1) {
-                //Quick release so go
-                button_count_C = 0
-                basic.showString("C")
-                dojo.bot_servo_go_position(dojo.POSITION_ID.C)
-            }
+        }
+
+        if (pins.digitalReadPin(DigitalPin.P8) == 0) {
+            serial.writeLine(`L ${dojo.servo_left_position} R ${dojo.servo_right_position} RT ${dojo.servo_rotate_position} J1 ${dojo.servo_jaw1_position} J2 ${dojo.servo_jaw2_position}`)
         }
 
         //Any movement will reset position indicator
-        if (movement_acc > 0) {
-            basic.showIcon(IconNames.SmallHeart)
-        }
-
-        //Serial output the positions
-        serial.writeLine(`L ${dojo.servo_left_position} R ${dojo.servo_right_position} RT ${dojo.servo_rotate_position} J1 ${dojo.servo_jaw1_position} J2 ${dojo.servo_jaw2_position}`)
+        //if (movement_acc > 0) {
+        //    basic.showIcon(IconNames.SmallHeart)
+        //}
 
         basic.pause(30)
 

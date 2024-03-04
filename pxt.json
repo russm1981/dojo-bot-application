@@ -6,7 +6,7 @@
         "core": "*",
         "radio": "*",
         "microphone": "*",
-        "dojo-block-master": "pub:54295-26607-92608-75565"
+        "dojo-block-master": "pub:40069-76406-50827-87395"
     },
     "files": [
         "main.ts",
